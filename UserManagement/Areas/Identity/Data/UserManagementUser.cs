@@ -17,5 +17,10 @@ namespace UserManagement.Areas.Identity.Data
         [PersonalData]
         [Column(TypeName="nvarchar(100)")]
         public string LastName { get; set; }
+        [PersonalData]
+        public int Age { get; set; }
+        [PersonalData]
+        [Column(TypeName = "nvarchar(255)")]
+        public string Hobbies { get; set; }
     }
 }

@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -21,14 +19,17 @@ namespace UserManagement.Areas.Identity.Pages.Account
         private readonly UserManager<UserManagementUser> _userManager;
         private readonly SignInManager<UserManagementUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManagementDataContext _userManagementContext;
 
         public LoginModel(SignInManager<UserManagementUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<UserManagementUser> userManager)
+            UserManager<UserManagementUser> userManager,
+            UserManagementDataContext userManagementContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _userManagementContext = userManagementContext;
         }
 
         [BindProperty]
@@ -86,6 +87,18 @@ namespace UserManagement.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    // Add Audit Log
+                    var user = _userManagementContext.Users.FirstOrDefault(x => x.Email == Input.Email);
+
+                    await _userManagementContext.AuditLogs.AddAsync(new AuditLog
+                    {
+                        DateTime = DateTime.UtcNow,
+                        EmailAddress = user.Email,
+                        Description = $"Login: {user.FirstName} {user.LastName} successfully."
+                    });
+
+                    await _userManagementContext.SaveChangesAsync();
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

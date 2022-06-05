@@ -3,11 +3,11 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using UserManagement.Data;
+using UserManagement.Areas.Identity.Data;
 
 namespace UserManagement.Migrations
 {
-    [DbContext(typeof(UserManagementContext))]
+    [DbContext(typeof(UserManagementDataContext))]
     partial class UserManagementContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -41,6 +41,29 @@ namespace UserManagement.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "f0b6c6c0-e746-4c98-9d50-d80e6f3509de",
+                            ConcurrencyStamp = "9d5d5ea8-ec35-4450-bb03-a65b371c39d6",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "9e248231-e213-4138-86ab-0e496be64b36",
+                            ConcurrencyStamp = "36bb6a2b-f598-4936-9d35-139c8795e7e3",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "95a355f4-c022-41f6-a905-6e7975073ea7",
+                            ConcurrencyStamp = "4a27c6e3-05c0-43ca-913d-221ef547686b",
+                            Name = "Reporter",
+                            NormalizedName = "REPORTER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -149,12 +172,37 @@ namespace UserManagement.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("UserManagement.Areas.Identity.Data.AuditLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
+                });
+
             modelBuilder.Entity("UserManagement.Areas.Identity.Data.UserManagementUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(95)");
 
                     b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -170,6 +218,9 @@ namespace UserManagement.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Hobbies")
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(100)");

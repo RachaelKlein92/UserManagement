@@ -1,0 +1,40 @@
+﻿@model List<UserManagement.Areas.Identity.Data.UserManagementUser>
+@{
+    ViewData["Title"] = "User Maintenance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>User Maintenance</h1>
+<form method="post" asp-action="AddUser" asp-controller="UserList">
+    <button class="btn btn-info">Add New User</button>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Email</th>
+            <th>FirstName</th>
+            <th>Deleted</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Email</td>
+            <td>@user.FirstName</td>
+            <td>@user.LockoutEnd.HasValue</td>
+            <td>
+                <form method="post" asp-action="Edit" asp-controller="UserList" asp-route-id=@user.Id>
+                    <button class="btn btn-info">Edit</button>
+                </form>
+            </td>
+            <td>
+                <form method="post" asp-action="Delete" asp-controller="UserList" asp-route-id=@user.Id>
+                    <button class="btn btn-info">Delete</button>
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

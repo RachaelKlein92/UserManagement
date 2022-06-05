@@ -47,9 +47,29 @@ namespace UserManagement.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "FirstName")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "LastName")]
+            public string LastName { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+
+            [Required]
+            [Phone]
+            [Display(Name = "CellPhone")]
+            public string CellPhone { get; set; }
+
+            [Required]
+            [Display(Name = "Age")]
+            public int Age { get; set; }
+
+            [Display(Name = "Hobbies")]
+            public string Hobbies { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -75,7 +95,16 @@ namespace UserManagement.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new UserManagementUser { UserName = Input.Email, Email = Input.Email };
+                var user = new UserManagementUser 
+                { 
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
+                    UserName = Input.Email, 
+                    Email = Input.Email,
+                    PhoneNumber = Input.CellPhone,
+                    Age = Input.Age,
+                    Hobbies = Input.Hobbies
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -94,6 +123,8 @@ namespace UserManagement.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
+                        // Show Popup Modal instead of redirect
+
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
