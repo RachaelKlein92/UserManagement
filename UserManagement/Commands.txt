@@ -1,0 +1,5 @@
+﻿// Update your migrations scripts with the latest code changes you made
+dotnet ef migrations add [YourMigrationName]
+
+// Deploy your migration scripts to your database
+dotnet ef database update
